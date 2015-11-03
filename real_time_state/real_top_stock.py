@@ -78,7 +78,7 @@ class updateData(object):
         response = urllib2.urlopen(request)
         contents = response.read()
         contents = contents.decode("gbk").encode("utf-8")
-        print contents
+        #print contents
         return contents
     def storeStockItem(self,key,stock_info):
         pass
