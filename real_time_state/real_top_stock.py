@@ -93,9 +93,9 @@ class updateData(object):
             #print 'a'+str(len(stock_current_statea_pro))
             if len(stock_current_statea_pro)>0:
                 for key in stock_current_statea_pro:
-                    stockDict[key].append(stock_current_statea_pro[key][0])
+                    stockDict[key]=[stock_current_statea_pro[key][0]]
 
-                stockTimeList.append(stock_current_statea_pro[key][1])
+                stockTimeList=[stock_current_statea_pro[key][1]]
         except:
             print "error"
 
