@@ -14,8 +14,6 @@ from stockSort import stocksort
 import json
 import datetime as dt
 
-stock_increase_rate = {}
-stock_state = {}
 
 stock_id_to_name = {}
 stock_file = {}
@@ -35,6 +33,7 @@ def check_time(time_now):
     if time_now >= time_1300 and time_now <= time_1500:
         return True
     return False
+
 
 class DataOcean:
     def __init__(self):
@@ -71,6 +70,8 @@ class StockDataCenter(object):
     def __init__(self):
         self.url = 'http://hq.sinajs.cn/list='
         self.data_ocean=DataOcean()
+        self.stock_state={}
+        self.stock_increase_rate={}
 
     def get_batch_stock_state(self, stock_ids):
         ret_stock_state_list = {}
@@ -113,10 +114,14 @@ class StockDataCenter(object):
             stock_current_state_pro = self.get_batch_stock_state(stock_ids)
             if len(stock_current_state_pro) > 0:
                 for stock_key in stock_current_state_pro:
-                    stock_increase_rate[stock_key] = [stock_current_state_pro[stock_key][0]]
-                stock_state[stock_key] = [stock_current_state_pro[stock_key][1]]
+                    self.stock_increase_rate[stock_key] = [stock_current_state_pro[stock_key][0]]
+                self.stock_state[stock_key] = [stock_current_state_pro[stock_key][1]]
         except:
             print "error"
+
+
+    def update_all_stock_state(self):
+        pass
 
 
 def print_dict(data):
@@ -128,9 +133,12 @@ def print_dict(data):
         print str(k) + "    " + str(v)
 
 
+data_center = StockDataCenter()
+
+
 if __name__ == '__main__':
 
-    data_center = StockDataCenter()
+    global data_center
 
     file_of_stock_id_list = open("../stock_list.json", "r")
 
@@ -146,7 +154,7 @@ if __name__ == '__main__':
 
     for stock_id in stock_id_list:
         key = stock_id + "_" + stock_id_to_name[stock_id]
-        stock_increase_rate[key] = []
+        data_center.stock_increase_rate[key] = []
         # stock_file[key]=open("state_file/"+key+".txt","a")
         count += 1
         if count < 800:
@@ -157,7 +165,7 @@ if __name__ == '__main__':
             count = 0
     data_center.update_batch_stock_state(stock_id_string.strip(","))
 
-    print_dict(stock_increase_rate)
+    print_dict(data_center.stock_increase_rate)
     while True:
         try:
             time.sleep(1)
@@ -174,7 +182,7 @@ if __name__ == '__main__':
             data_center.update_batch_stock_state(stock_id_string.strip(","))
 
             # print stockDict
-            xx = stocksort(stock_increase_rate)
+            xx = stocksort(data_center.stock_increase_rate)
             print "===========Top 10 ==========="
             print dt.datetime.now().time()
             print_dict(xx.getSort()[0:10])
