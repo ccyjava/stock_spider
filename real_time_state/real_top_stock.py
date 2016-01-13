@@ -37,7 +37,16 @@ def check_time(time_now):
     return False
 
 class DataOcean:
-    pass
+    def __init__(self):
+        pass
+
+    def save_data(self,key,value,time_now):
+        fw = open("state_file/" + key + ".txt", "a")
+        fw.write(key + "," + value + "\n")
+        fw.close()
+        print time_now
+        print "Record stock " + key
+
 
 class DebugHelper:
     def __init__(self):
@@ -60,8 +69,8 @@ class DebugHelper:
 
 class StockDataCenter(object):
     def __init__(self):
-
         self.url = 'http://hq.sinajs.cn/list='
+        self.data_ocean=DataOcean()
 
     def get_batch_stock_state(self, stock_ids):
         ret_stock_state_list = {}
@@ -82,11 +91,7 @@ class StockDataCenter(object):
                     ret_stock_state_list[key] = [0, stock_current_state[31]]
                 time_now = dt.datetime.now().time()
                 if check_time(time_now):
-                    fw = open("state_file/" + key + ".txt", "a")
-                    fw.write(key + "," + content + "\n")
-                    fw.close()
-                    print time_now
-                    print "Record stock " + key
+                    self.data_ocean.save_data(key,content,time_now)
                 else:
                     print time_now
                     print "Not in deal time!"
@@ -102,12 +107,6 @@ class StockDataCenter(object):
         contents = contents.decode("gbk").encode("utf-8")
         # print contents
         return contents
-
-    def store_stock_item(self, key, stock_info):
-        pass
-
-    def calculate_increase_rate(self, stock_info):
-        pass
 
     def update_batch_stock_state(self, stock_ids):
         try:
