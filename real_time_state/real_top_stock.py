@@ -14,6 +14,8 @@ from stock_sort import stocksort
 from data_center import *
 import json
 import datetime as dt
+import logging
+logging.basicConfig(format='%(levelname)s--%(asctime)s:%(message)s', level=logging.DEBUG)
 
 
 is_debug = True

@@ -10,7 +10,7 @@ def check_time(time_now):
     time_0930 = dt.time(9, 30, 0)
     time_1130 = dt.time(11, 30, 0)
     time_1300 = dt.time(13, 0, 0)
-    time_1500 = dt.time(15, 0, 0)
+    time_1500 = dt.time(23, 59, 59)
 
     if time_now >= time_0930 and time_now <= time_1130:
         return True

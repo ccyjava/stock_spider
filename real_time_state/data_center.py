@@ -7,26 +7,7 @@ import json
 from util import *
 
 import traceback,sys
-
-
-
-class DebugHelper:
-    def __init__(self):
-        self.is_dubug = True
-
-    def get_log_func(self):
-        def tmp_func(msg):
-            self.log(msg)
-
-        return tmp_func
-
-    def static_log_fun(cls):
-        tmp_instance = cls()
-        return tmp_instance.get_log_func()
-
-    def log(self, msg):
-        if self.is_debug:
-            print msg
+import logging
 
 
 class StockDataCenter(object):
@@ -71,13 +52,12 @@ class StockDataCenter(object):
                 if check_time(time_now):
                     self.data_ocean.save_data(key,content,time_now)
                 else:
-                    print time_now
-                    print "Not in deal time!"
+                    logging.info( "Not in deal time!")
                 success+=1
             except:
-                print "error in " + key
+                logging.error( "error in " + key)
                 traceback.print_exc(file=sys.stdout)
-        print "Record %d/%d stocks"%(success,total)
+        logging.info("Record %d/%d stocks",success,total)
         return ret_stock_state_list
 
     @staticmethod
@@ -97,7 +77,7 @@ class StockDataCenter(object):
                     self.stock_increase_rate[stock_key] = [stock_current_state_pro[stock_key][0]]
                 self.stock_state[stock_key] = [stock_current_state_pro[stock_key][1]]
         except:
-            print "error"
+            logging.error("error in update_batch_stock_state()")
 
 
     def update_all_stock_state(self):
