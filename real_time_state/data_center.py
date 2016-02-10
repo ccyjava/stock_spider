@@ -6,7 +6,7 @@ import urllib2
 import json
 from util import *
 
-
+import traceback,sys
 
 
 
@@ -42,7 +42,7 @@ class StockDataCenter(object):
         # stock_name_map={}
         for item in self.stock_id_list:
             self.stock_id_to_name[item["stockCode"]] = item["stockName"].encode("utf-8")
-        self.stock_id_list = map(lambda x: x.get('stockCode').encode("utf-8"), stock_id_list)
+        self.stock_id_list = map(lambda x: x.get('stockCode').encode("utf-8"), self.stock_id_list)
         file_of_stock_id_list.close()
 
 
@@ -50,7 +50,10 @@ class StockDataCenter(object):
     def get_batch_stock_state(self, stock_ids):
         ret_stock_state_list = {}
         contents = self._access_net(self.url + str(stock_ids))
+        total=0
+        success=0
         for content in str(contents).splitlines():
+            total+=1
             stock_current_state = content.split(",")
             if len(stock_current_state) <= 2:
                 continue
@@ -70,8 +73,11 @@ class StockDataCenter(object):
                 else:
                     print time_now
                     print "Not in deal time!"
+                success+=1
             except:
                 print "error in " + key
+                traceback.print_exc(file=sys.stdout)
+        print "Record %d/%d stocks"%(success,total)
         return ret_stock_state_list
 
     @staticmethod
